@@ -13,46 +13,73 @@ const ctx = canvas.getContext("2d");
 const GAP = 3;
 const ROWS = 30;
 const COLS = 30;
-const CELLWIDTH = canvas.height / COLS;
+const CELLWIDTH = canvas.width / COLS;
 const CELLHEIGHT = canvas.height / ROWS;
 
-// catcher
-let catcher = { x: 19, y: 29 };
+// player
+// treasure --> function placeTreasure
+// labyrinth
+
+let player = { x: 10, y: 10 };
+
+let treasure;
+placeTreasure();
+
+// range of coordinates 1,1 - 28,28
+function placeTreasure() {
+  let randomX = Math.floor(Math.random() * (COLS - 2)) + 1;
+  let randomY = Math.floor(Math.random() * (ROWS - 2)) + 1;
+
+  treasure = { x: randomX, y: randomY };
+}
+
+// treasure is newly placed every few seconds
+// TODO: treasure must not be placed "inside" labyrinth wall
+let timeInterval = 10000;
+setInterval(placeTreasure, timeInterval);
 
 document.addEventListener("keydown", keyDown);
 
 draw();
 
 function draw() {
-  //canvas
-  ctx.fillStyle = "rgb(0, 0, 51)";
+  // canvas
+  ctx.fillStyle = "turquoise";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  //style - idea: grid of canvas starts blinking in random colors making the game more difficult ("eye cancer")
-  ctx.fillStyle = "lightblue";
-  ctx.fillRect(0, 0, CELLWIDTH * 0.5, CELLHEIGHT * 0.5);
-  ctx.fillStyle = "yellow";
-  ctx.fillRect(12.5, 12.5, CELLWIDTH * 0.5, CELLHEIGHT * 0.5);
-  ctx.fillStyle = "pink";
-  ctx.fillRect(0, 12.5, CELLWIDTH * 0.5, CELLHEIGHT * 0.5);
-  ctx.fillStyle = "lightgreen";
-  ctx.fillRect(12.5, 0, CELLWIDTH * 0.5, CELLHEIGHT * 0.5);
+  // labyrinth
+  addLabyrinth();
 
-  // catcher
+  // player
+  // TODO: change shape
   ctx.fillStyle = "white";
-  ctx.fillRect(
-    catcher.x * CELLWIDTH,
-    catcher.y * CELLHEIGHT,
-    CELLWIDTH,
-    CELLHEIGHT - 6 * GAP
-  );
+  add(player.x, player.y);
+
+  // treasure
+  ctx.fillStyle = "yellow";
+  add(treasure.x, treasure.y);
 
   requestAnimationFrame(draw);
 }
 
+function add(x, y) {
+  ctx.fillRect(x * CELLWIDTH, y * CELLHEIGHT, CELLWIDTH, CELLHEIGHT);
+}
+
+function addLabyrinth() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, CELLHEIGHT); // top
+  ctx.fillRect(canvas.width - CELLWIDTH, 0, CELLWIDTH, canvas.height); // right
+  ctx.fillRect(0, canvas.height - CELLHEIGHT, canvas.width, CELLHEIGHT); // bottom
+  ctx.fillRect(0, 0, CELLWIDTH, canvas.height); // left
+}
+
+// move player
 function keyDown(e) {
-  if (e.keyCode == 37) catcher.x--;
-  if (e.keyCode == 39) catcher.x++;
+  if (e.keyCode == 37) player.x--;
+  if (e.keyCode == 38) player.y--;
+  if (e.keyCode == 39) player.x++;
+  if (e.keyCode == 40) player.y++;
 }
 
 function gameLoop() {}
