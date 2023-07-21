@@ -21,10 +21,8 @@ const CELLHEIGHT = canvas.height / ROWS;
 // labyrinth
 
 let player = { x: 10, y: 10 };
-
 let points = 0;
 let foundTreasure = false;
-
 let treasure;
 placeTreasure();
 
@@ -35,12 +33,11 @@ function placeTreasure() {
 
   treasure = { x: randomX, y: randomY };
   foundTreasure = false;
-  console.log("treasure");
 }
 
 // treasure is newly placed every few seconds
 // TODO: treasure must not be placed "inside" labyrinth wall
-let timeInterval = 5000;
+let timeInterval = 1;
 setInterval(gameLoop, timeInterval);
 
 document.addEventListener("keydown", keyDown);
@@ -130,10 +127,23 @@ function addLabyrinthWallsAtRandom() {
 
 // move player
 function keyDown(e) {
-  if (e.keyCode == 37) player.x--;
-  if (e.keyCode == 38) player.y--;
-  if (e.keyCode == 39) player.x++;
-  if (e.keyCode == 40) player.y++;
+  if (e.keyCode == 37) {
+    if (player.x > 1) {
+      player.x--;
+    }
+  }
+  if (e.keyCode == 38)
+    if (player.y > 1) {
+      player.y--;
+    }
+  if (e.keyCode == 39)
+    if (player.x < COLS - 2) {
+      player.x++;
+    }
+  if (e.keyCode == 40)
+    if (player.y < ROWS - 2) {
+      player.y++;
+    }
 }
 
 function gameLoop() {
@@ -141,14 +151,13 @@ function gameLoop() {
     foundTreasure = true;
     points++;
     placeTreasure();
-
   }
 
   testGameOver();
 }
 
 function testGameOver() {
-  if (points == 1) {
-    console.log("You won");
+  if (points == 10) {
+    // show results
   }
 }
