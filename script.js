@@ -150,6 +150,7 @@ function gameLoop() {
   if (player.x == treasure.x && player.y == treasure.y) {
     foundTreasure = true;
     points++;
+    updateScore();
     placeTreasure();
   }
 
@@ -161,3 +162,11 @@ function testGameOver() {
     // show results
   }
 }
+
+function updateScore(){
+  const scorePara = document.getElementById("score");
+  scorePara.textContent = `Score: ${points}`;
+}
+
+// TODO: change styling of score
+// TODO: add timer
